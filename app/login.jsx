@@ -9,6 +9,7 @@ import { useRouter } from 'expo-router'
 import { wp, hp} from '../helpers/common'
 import Input from '../components/Input'
 import Button from '../components/Button'
+import { supabase } from '../lib/supabase'
 
 const Login = () => {
     const router = useRouter();
@@ -22,6 +23,24 @@ const Login = () => {
         return;
       }
 
+      let email = emailRef.current.trim();
+      let password = passwordRef.current.trim();
+
+      setLoading(true);
+
+      const{error} = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      setLoading(false);
+
+      console.log('error', error);
+      if(error) {
+        Alert.alert('Login', error.message)
+      }
+      
+      
       
     }
   return (
@@ -59,7 +78,7 @@ const Login = () => {
           <Button title={'Login'} loading={loading} onPress={onSubmit} />
         </View>
 
-          {/* area do footer */}
+          {/* area do footer */} 
           <View style={styles.footer}>
             <Text style={styles.footerText} >
               Não possui uma conta?
